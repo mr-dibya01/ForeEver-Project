@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>inline-flex Example</title>
+  <style>
+    .container {
+      display: inline-flex;
+      background-color: lightblue;
+      padding: 10px;
+      border: 2px solid blue;
+    }
+
+    .box {
+      background-color: orange;
+      padding: 10px 20px;
+      margin: 5px;
+    }
+  </style>
 </head>
-<body class="p-8">
-
-  <h1 class="text-xl font-bold mb-4">Tailwind: min-w-5 vs w-5 Example</h1>
-
-  <!-- Box with w-5 (fixed width = 20px) -->
-  <div class="w-5 bg-blue-300 text-center text-sm text-black mb-4 px-2 py-1">
-    Hljeekhfwhefhweefhwefhekfkh
-  </div>
-
-  <!-- Box with min-w-5 (min-width = 20px, can grow) -->
-  <div class="min-w-5 bg-green-400 text-center text-sm text-white px-2 py-1 inline-block">
-    Helloe;fjleljwlejfjlefejlf
-  </div>
-
+<body>
+  <p>Text before 
+    <div class="container">
+      <div class="box">A</div>
+      <div class="box">B</div>
+      <div class="box">C</div>
+    </div>
+  text after</p>
 </body>
 </html>
