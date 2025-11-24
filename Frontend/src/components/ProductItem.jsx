@@ -2,9 +2,10 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext'
 
-export default function Product({ name, id, image, price }) {
+export default function ProductItem({ name, id, image, price }) {
+  // console.log(name, id, image, price);
     let { currency } = useContext(ShopContext);
-    console.log(currency);
+    // console.log(currency);
 
   return (
     <Link to={`/product/${id}`}>
@@ -13,7 +14,7 @@ export default function Product({ name, id, image, price }) {
                 <img className='hover:scale-110 transition ease-in-out' src={image[0]} alt="" />
             </div>
             <p className='text-sm mt-3 mb-1'>{name}</p>
-            <p className='font-medium'>{currency}{price}</p>
+            <p className='font-medium'>{currency}{price.toLocaleString('en-IN')}</p>
         </div>
     </Link>
   )

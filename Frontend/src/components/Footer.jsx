@@ -4,26 +4,62 @@ import { assets } from '../assets/frontend_assets/assets'
 
 function Footer() {
   return (
-    <div className='flex flex-col gap-y-8 sm:flex-row justify-between py-20 gap-x-6'>
-      <div className='w-full sm:w-[65%]'>
-        <img src={assets.logo} alt="" className='w-32 mb-5'/>
-        <p className='w-full sm:w-[70%] text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus aliquid minus impedit unde. Voluptate minima amet excepturi, ratione est ex consectetur maiores, quaerat, libero voluptates ipsum tenetur quibusdam laboriosam porro?</p>
+    <div>
+      <div className='flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] my-10 mt-20 gap-14 sm:text-base text-sm text-gray-500'>
+        <div>
+          <img src={assets.logo} alt="" className='w-32 mb-5'/>
+          <p className='w-full sm:w-[65%] text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus aliquid minus impedit unde. Voluptate minima amet excepturi, ratione est ex consectetur maiores, quaerat, libero voluptates ipsum tenetur quibusdam laboriosam porro?</p>
+        </div>
+        <div>
+          <h1 className='text-xl font-semibold mb-5 text-black'>COMPANY</h1>
+          <p className='hover:text-black transition-colors'>Home</p>
+          <p className='hover:text-black transition-colors'>About us</p>
+          <p className='hover:text-black transition-colors'>Delivery</p>
+          <p className='hover:text-black transition-colors'>Privacy policy</p>
+        </div>
+        <div>
+          <h1 className='text-xl font-semibold mb-5 text-black'>GET IN TOUCH</h1>
+          <p className='hover:text-black transition-colors'>+91-000-000-0000</p>
+          <p className='hover:text-black transition-colors'>dibyaranjan.webdev@gmail.com</p>
+          <Link className='hover:text-black transition-colors' to={'https://www.instagram.com/build_yourownwebsite/'}>Instagram</Link>
+        </div>
       </div>
-      <div className=''>
-            <h1 className='text-xl font-semibold mb-3'>COMPANY</h1>
-            <p className='text-sm text-gray-500'>Home</p>
-            <p className='text-sm text-gray-500'>About us</p>
-            <p className='text-sm text-gray-500'>Delivery</p>
-            <p className='text-sm text-gray-500'>Privacy policy</p>
-      </div>
-      <div className=''>
-            <h1 className='text-xl font-semibold mb-3'>GET IN TOUCH</h1>
-            <p className='text-sm text-gray-500'>+91-000-000-0000</p>
-            <p className='text-sm text-gray-500'>dibyaranjan.webdev@gmail.com</p>
-            <Link className='text-sm text-gray-500' to={'https://www.instagram.com/build_yourownwebsite/'}>Instagram</Link>
+      <div>
+        <hr />
+        <p className='py-5 text-sm text-center'>Copyright 2025@ forever.com - All Right Reserved.</p>
       </div>
     </div>
+    
   )
 }
 
 export default Footer
+
+
+
+// <div>
+    //   <div className='flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10 mt-40 text-sm'>
+    //     <div>
+    //       <img src={assets.logo} alt="" className='mb-5 w-32'/>
+    //       <p className='w-full md:w-2/3 text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas unde reprehenderit culpa eum impedit quisquam saepe velit? Unde fugiat libero facilis incidunt optio ad corporis atque dignissimos, sunt dolorum ea.</p>
+    //     </div>
+    //     <div>
+    //       <p className='text-xl font-medium mb-5'>COMPANY</p>
+    //       <ul className='flex flex-col gap-1 text-gray-600'>
+    //         <li>Home</li>
+    //         <li>About</li>
+    //         <li>Delivery</li>
+    //         <li>Privacy policy</li>
+    //       </ul>
+    //     </div>
+    //     <div>
+    //       <p className='text-xl font-medium mb-5'>COMPANY</p>
+    //       <ul className='flex flex-col gap-1 text-gray-600'>
+    //         <li>Home</li>
+    //         <li>About</li>
+    //         <li>Delivery</li>
+    //         <li>Privacy policy</li>
+    //       </ul>
+    //     </div>
+    //   </div>
+    // </div>
