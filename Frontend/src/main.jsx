@@ -6,7 +6,6 @@ import ShopContextProvider from './context/ShopContext'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-console.log("main.js");
 
 
 createRoot(document.getElementById('root')).render(
