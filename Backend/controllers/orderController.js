@@ -53,13 +53,178 @@ const placeOrder = async (req,res) => {
 }
 
 // placing order stripe
-const placeOrderStripe = async (req,res) => {
+const placeOrderStripe = async (req, res) => {
+    let { paymentMode, cartItems, formData, shipping_fee } = req.body;
+    let { origin } = req.headers;
 
+    // console.log(cartItems);
+
+    if (cartItems.length === 0) {
+        return res.status(httpStatus.NOT_FOUND).json({ error: "There is no item in cart" });
+    }
+
+    if (!paymentMode || !formData || shipping_fee === undefined || shipping_fee === null) {
+        return res.status(httpStatus.NOT_FOUND).json({ error: "Please provide the all dettails" });
+    }
+
+    let orderItems = cartItems.map((item) => ({
+        productId: item.productId._id,
+        name: item.productId.name,
+        description: item.productId.description,
+        price: item.productId.price,
+        image: item.productId.image,
+        category: item.productId.category,
+        subCategory: item.productId.subCategory,
+        size: item.size,
+        quantity: item.quantity,
+    }));
+
+    const totalAmount = cartItems.reduce((acc, curr) => acc + curr.price, 0) + shipping_fee;
+
+    let newOrder = new Order({
+        userId: req.user.id,
+        items: orderItems,
+        address: formData,
+        amount: totalAmount,
+        paymentMode: paymentMode,
+        payment: false,
+        date: Date.now(),
+    });
+
+    await newOrder.save();
+
+    const line_items = cartItems.map((item) => ({
+        price_data: {
+            currency,
+            product_data: {
+                name: item.productId.name,
+            },
+            unit_amount: item.price * 100,
+        },
+        quantity: item.quantity,
+    }));
+
+    line_items.push({
+        price_data: {
+            currency,
+            product_data: {
+                name: "Delivery Charges",
+            },
+            unit_amount: shipping_fee * 100,
+        },
+        quantity: 1,
+    });
+
+    const session = await stripe.checkout.sessions.create({
+        success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
+        cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
+        line_items,
+        mode: 'payment',
+    });
+
+    console.log("sesion",session,"-----");
+
+    res.json({ success: true,session_url: session.url})
+
+    // await Cart.findOneAndUpdate({userId},{item:[]});
+    // console.log(cartItems);
+
+};
+
+// const stripeWebhook = async (req, res) => {
+//     const sig = req.headers['stripe-signature'];
+
+//     let userId =req.user.id;
+//     console.log("userId",userId);
+
+//     let event;
+
+//     try {
+//       event = stripe.webhooks.constructEvent(
+//         req.body,
+//         sig,
+//         process.env.STRIPE_WEBHOOK_SECRET
+//       );
+//     } catch (err) {
+//       console.log("❌ Webhook Signature Error", err);
+//       return res.status(400).send(`Webhook Error: ${err.message}`);
+//     }
+
+//     if (event.type === "checkout.session.completed") {
+//       const session = event.data.object;
+
+//       const orderId = session.success_url.split("orderId=")[1];
+
+//       await Order.findByIdAndUpdate(orderId, { payment: true });
+
+//       const order = await Order.findById(orderId);
+//       let cart = await Cart.findOneAndUpdate({ userId }, { item: [] });
+//       console.log("verifyStripe",order,"------------",cart);
+
+//       console.log("💰 Payment Verified and Cart Cleared");
+//     }
+
+//     res.status(200).send("OK");
+//   }
+
+const verifyStripe =async (req,res) => {
+    let { orderId, success } = req.body;
+    let userId =req.user.id;
+    if(success === 'true') {
+        let order=await Order.findByIdAndUpdate(orderId ,{payment: true});
+        let cart=await Cart.findOneAndUpdate({ userId } ,{ item: [] });
+        // console.log("verifyStripe",order,"------------",cart);
+        res.json({ success: true });
+    } else {
+        console.log(orderId);
+        let order=await Order.findByIdAndDelete(orderId,{ new: true});
+        // console.log(order);
+        res.json({ success: false });
+    }
 }
 
-// placing order razor pay
-const placeOrderRazorPay = (req,res) => {
 
+
+// placing order razor pay
+const placeOrderRazorPay = async (req,res) => {
+    let { paymentMode, cartItems, formData, shipping_fee } = req.body;
+    // let { origin } = req.headers;
+
+    // console.log(cartItems);
+
+    if (cartItems.length === 0) {
+        return res.status(httpStatus.NOT_FOUND).json({ error: "There is no item in cart" });
+    }
+
+    if (!paymentMode || !formData || shipping_fee === undefined || shipping_fee === null) {
+        return res.status(httpStatus.NOT_FOUND).json({ error: "Please provide the all dettails" });
+    }
+
+    let orderItems = cartItems.map((item) => ({
+        productId: item.productId._id,
+        name: item.productId.name,
+        description: item.productId.description,
+        price: item.productId.price,
+        image: item.productId.image,
+        category: item.productId.category,
+        subCategory: item.productId.subCategory,
+        size: item.size,
+        quantity: item.quantity,
+    }));
+
+    const totalAmount = cartItems.reduce((acc, curr) => acc + curr.price, 0) + shipping_fee;
+
+    let newOrder = new Order({
+        userId: req.user.id,
+        items: orderItems,
+        address: formData,
+        amount: totalAmount,
+        paymentMode: paymentMode,
+        payment: false,
+        date: Date.now(),
+    });
+
+    await newOrder.save();
 }
 
 //All order data for admin panel
@@ -92,4 +257,4 @@ const updateStatus = async (req,res) => {
     res.json(orderData);
 }
 
-export { placeOrder, placeOrderStripe, placeOrderRazorPay, allOrders, userOrders, updateStatus }
+export { placeOrder, placeOrderStripe, placeOrderRazorPay, allOrders, userOrders, updateStatus, verifyStripe }
