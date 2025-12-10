@@ -25,7 +25,10 @@ export const verifyTokken = (req,res,next) => {
         req.user = decoded; 
         next();
     } catch (err) {
-        console.log("verifyTokken",err);
-        res.status(htttpStatus.INTERNAL_SERVER_ERROR).json({error : "Something went wrong!"})
+        console.log("verifyTokken",err.name);
+        if (err.name === "TokenExpiredError") {
+            return res.status(401).json({ error: "Token expired, please login again" });
+        }
+        return res.status(401).json({ error: err.message });
     }
 } 

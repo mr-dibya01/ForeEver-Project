@@ -1,4 +1,4 @@
-import { placeOrder, placeOrderStripe, placeOrderRazorPay, allOrders, userOrders, updateStatus } from "../controllers/orderController.js"
+import { placeOrder, placeOrderStripe, placeOrderRazorPay, allOrders, userOrders, updateStatus, verifyStripe } from "../controllers/orderController.js"
 import { Router } from "express"
 import { verifyTokken } from "../middlewares/auth.js"
 import adminAuth from "../middlewares/adminAuth.js"

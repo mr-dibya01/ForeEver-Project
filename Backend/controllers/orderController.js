@@ -1,7 +1,11 @@
 import Order from "../model/orderModel.js";
 import Cart from "../model/cartModel.js";
 import httpStatus from "http-status"
+import Stripe from "stripe"
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+const currency = 'inr';
 
 // placing order cod
 const placeOrder = async (req,res) => {
@@ -53,7 +57,7 @@ const placeOrder = async (req,res) => {
 }
 
 // placing order stripe
-const placeOrderStripe = async (req, res) => {
+const placeOrderStripe = async (req, res) => { 
     let { paymentMode, cartItems, formData, shipping_fee } = req.body;
     let { origin } = req.headers;
 
@@ -79,8 +83,8 @@ const placeOrderStripe = async (req, res) => {
         quantity: item.quantity,
     }));
 
-    const totalAmount = cartItems.reduce((acc, curr) => acc + curr.price, 0) + shipping_fee;
-
+    const totalAmount = cartItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0) + shipping_fee;
+    console.log("totalAmount",totalAmount);
     let newOrder = new Order({
         userId: req.user.id,
         items: orderItems,
