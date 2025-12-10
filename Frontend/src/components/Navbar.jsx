@@ -17,7 +17,7 @@ function Navbar() {
     return (
         <div className='flex justify-between items-center py-4 text-sm'> 
             <Link to='/'>
-                <img src={assets.logo} alt="" className='w-32 hover:cursor-pointer'/>
+                <img src={assets.logo1} alt="" className='w-56 hover:cursor-pointer'/>
             </Link>
             <div className='hidden sm:flex gap-6 items-center text-gray-700'>
                 <NavLink to={"/"}  className="flex flex-col items-center gap-1">

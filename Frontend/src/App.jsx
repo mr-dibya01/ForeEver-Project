@@ -15,6 +15,7 @@ import SearchBar from './components/SearchBar'
 import Register from './pages/Register'
 import TrackOrder from './pages/TrackOrder'
 import NotFound from './pages/NotFound'
+import Verify from './pages/Verify'
 console.log("App.jsx")
 
 const App = () => {
@@ -35,6 +36,7 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/trackorder/:orderId/:productId/:size' element={<TrackOrder />} />
+        <Route path='/verify' element={ <Verify /> } />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

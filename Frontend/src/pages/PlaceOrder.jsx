@@ -48,6 +48,18 @@ const PlaceOrder = () => {
         break;
 
       case "stripe":
+        try{
+          let responseStripe = await axios.post(baseurl+'api/order/stripe',{ formData, cartItems, paymentMode, shipping_fee },{ headers: { "Authorization": `Bearer ${token}`}});
+          
+          if (responseStripe.data.success) {
+            const { session_url } = responseStripe.data;
+            window.location.replace(session_url);
+          } else {
+            toast.error(responseStripe.data.message);
+          }
+        } catch (err) {
+          console.log(err);
+        }
         break;
 
       default:
