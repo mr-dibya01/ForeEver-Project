@@ -4,6 +4,7 @@ import Title from "../components/Title";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import PlaceOrder from "./PlaceOrder";
+import { assets } from "../assets/frontend_assets/assets";
 
 
 const Cart = () => {
@@ -95,9 +96,15 @@ const Cart = () => {
           </div>
         </div>
       ) : (
-        <div className="text-center  mt-10 uppercase py-6">
-          <p className="text-3xl font-medium text-red-600">your Cart is empty!</p>
-          <button onClick={() => navigate('/collection')} className="px-5 py-2 bg-black text-white font-medium uppercase rounded mt-5 active:bg-gray-800">continue shopping</button>
+        <div className="text-center  mt-5 py-6 flex flex-col items-center gap-6">
+          <div>
+            <img src={assets.empty_cart} alt="" className="w-60"/>
+          </div>
+          <div className="mt-10">
+            <p className="text-5xl font-medium text-gray-800">Your Cart is <span className="text-[#FD392C]">Empty!</span></p>
+            <p className="text-gray-700 text-lg mt-8">Must add items on the cart before you proceed to check out.</p>
+            <button onClick={() => navigate('/collection')} className="px-16 py-3 text-lg bg-[#FD392C] text-white font-medium uppercase rounded-full mt-8 active:bg-gray-800">continue shopping</button>
+          </div>
         </div>
       )}
     </>
