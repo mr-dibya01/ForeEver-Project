@@ -21,7 +21,8 @@ const PlaceOrder = () => {
     number: "",
   });
 
-  let { token, cartItems, shipping_fee, navigate, setCartItems } = useContext(ShopContext);
+  let { token, cartItems, shipping_fee, navigate, setCartItems } =
+    useContext(ShopContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,25 +33,82 @@ const PlaceOrder = () => {
       case "cod":
         try {
           let res = await axios.post(
-          baseurl + "api/order/place",
-          { formData, cartItems, paymentMode, shipping_fee },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-          navigate('/orders');
+            baseurl + "api/order/place",
+            { formData, cartItems, paymentMode, shipping_fee },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          navigate("/orders");
           setCartItems([]);
         } catch (err) {
           console.log(err);
-          toast.error(err?.response?.data?.error || 'Some issue with cash on Delivery')
+          toast.error(
+            err?.response?.data?.error || "Some issue with cash on Delivery"
+          );
         }
         break;
 
       case "razorpay":
+        try {
+          let res = await axios.post(
+            baseurl + "api/order/razor",
+            { formData, cartItems, paymentMode, shipping_fee },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
+          const { razorOrder, key, amount, orderId } = res.data;
+
+          var options = {
+            key,
+            amount: amount * 100,
+            currency: "INR",
+            name: "Your Store",
+            description: "Order Payment",
+            order_id: razorOrder.id,
+            handler: async function (response) {
+              const verify = await axios.post(
+                baseurl + "api/order/razor/verify",
+                {
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                  orderId,
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+
+              if (verify.data.success) {
+                setCartItems([]);
+                navigate("/orders");
+              } else {
+                toast.error("Payment Failed");
+              }
+            },
+            prefill: {
+              name: formData.firstName,
+              email: formData.email,
+              contact: formData.number,
+            },
+            theme: { color: "#3399cc" },
+          };
+
+          const rzp1 = new window.Razorpay(options);
+          rzp1.open();
+        } catch (err) {
+          console.log(err);
+          toast.error(
+            err?.response?.data?.error || "Some issue with razorPay"
+          );
+        }
         break;
 
       case "stripe":
-        try{
-          let responseStripe = await axios.post(baseurl+'api/order/stripe',{ formData, cartItems, paymentMode, shipping_fee },{ headers: { "Authorization": `Bearer ${token}`}});
-          
+        try {
+          let responseStripe = await axios.post(
+            baseurl + "api/order/stripe",
+            { formData, cartItems, paymentMode, shipping_fee },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
           if (responseStripe.data.success) {
             const { session_url } = responseStripe.data;
             window.location.replace(session_url);

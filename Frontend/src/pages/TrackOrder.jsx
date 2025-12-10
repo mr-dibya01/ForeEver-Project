@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 const TrackOrder = () => {
   let { orderId, productId, size } = useParams();
-  let { baseurl, token, navigate } = useContext(ShopContext);
+  let { baseurl, token, navigate, shipping_fee } = useContext(ShopContext);
   let [order, setOrder] = useState(null);
 
   const fetchOrder = async () => {
@@ -74,7 +74,7 @@ const TrackOrder = () => {
           <h2 className="font-semibold">{order.name}</h2>
           <p>Size: {order.size}</p>
           <p>Qty: {order.quantity}</p>
-          <p>₹{order.price}</p>
+          <p>₹{order.amount}</p>
         </div>
       </div>
 

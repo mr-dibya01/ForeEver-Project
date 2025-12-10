@@ -6,8 +6,7 @@ import { toast } from 'react-toastify';
 
 
 const Orders = () => {
-  let { baseurl, currency ,token ,products ,navigate } = useContext(ShopContext);
-
+  let { baseurl, currency ,token ,products , navigate, shipping_fee  } = useContext(ShopContext);
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
 
@@ -21,6 +20,7 @@ const Orders = () => {
     }).replace(",", "•");
   };
   let [orderData,setOrderData] = useState([]);
+  console.log(orderData);
 
   useEffect(()=> {
     console.log("orderData",orderData);
@@ -80,7 +80,7 @@ const Orders = () => {
               <div className='flex flex-col justify-between gap-3 text-sm'>
                 <h1 className='font-medium text-base'>{item.name}</h1>
                 <div className='flex items-center gap-4'>
-                  <p>{currency}{item.price}</p>
+                  <p>{currency}{item.price + shipping_fee}</p>
                   <p>Quantity: {item.quantity}</p>
                   <p>Size: {item.size}</p>
                 </div>

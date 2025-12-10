@@ -1,4 +1,4 @@
-import { placeOrder, placeOrderStripe, placeOrderRazorPay, allOrders, userOrders, updateStatus, verifyStripe } from "../controllers/orderController.js"
+import { placeOrder, placeOrderStripe, placeOrderRazorPay, allOrders, userOrders, updateStatus, verifyStripe, verifyRazorPay } from "../controllers/orderController.js"
 import { Router } from "express"
 import { verifyTokken } from "../middlewares/auth.js"
 import adminAuth from "../middlewares/adminAuth.js"
@@ -17,6 +17,8 @@ orderRouter.get('/user/list',verifyTokken,wrapAsync(userOrders));
 
 // verifyStripe
 orderRouter.put('/verifyStripe',verifyTokken,wrapAsync(verifyStripe))
+// verifyRazorPay
+orderRouter.post('/razor/verify', verifyTokken, wrapAsync(verifyRazorPay));
 
 export default orderRouter;   
 

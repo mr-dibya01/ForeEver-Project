@@ -2,8 +2,15 @@ import Order from "../model/orderModel.js";
 import Cart from "../model/cartModel.js";
 import httpStatus from "http-status"
 import Stripe from "stripe"
+import Razorpay from "razorpay";
+import crypto from "crypto"
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 const currency = 'inr';
 
@@ -83,8 +90,8 @@ const placeOrderStripe = async (req, res) => {
         quantity: item.quantity,
     }));
 
-    const totalAmount = cartItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0) + shipping_fee;
-    console.log("totalAmount",totalAmount);
+    const totalAmount = cartItems.reduce((acc,curr) => acc + curr.price * curr.quantity ,0) + shipping_fee;
+    
     let newOrder = new Order({
         userId: req.user.id,
         items: orderItems,
@@ -191,17 +198,21 @@ const verifyStripe =async (req,res) => {
 
 // placing order razor pay
 const placeOrderRazorPay = async (req,res) => {
-    let { paymentMode, cartItems, formData, shipping_fee } = req.body;
+    let { cartItems, formData, shipping_fee } = req.body;
     // let { origin } = req.headers;
 
     // console.log(cartItems);
 
-    if (cartItems.length === 0) {
-        return res.status(httpStatus.NOT_FOUND).json({ error: "There is no item in cart" });
+    if (!cartItems || cartItems.length === 0) {
+        return res.status(400).json({ error: "Your cart is empty" });
     }
 
-    if (!paymentMode || !formData || shipping_fee === undefined || shipping_fee === null) {
-        return res.status(httpStatus.NOT_FOUND).json({ error: "Please provide the all dettails" });
+    if (!formData) {
+        return res.status(400).json({ error: "Address details required" });
+    }
+
+    if (shipping_fee === undefined || shipping_fee === null) {
+        return res.status(400).json({ error: "Shipping fee missing" });
     }
 
     let orderItems = cartItems.map((item) => ({
@@ -216,20 +227,74 @@ const placeOrderRazorPay = async (req,res) => {
         quantity: item.quantity,
     }));
 
-    const totalAmount = cartItems.reduce((acc, curr) => acc + curr.price, 0) + shipping_fee;
+    // console.log(cartItems);
 
-    let newOrder = new Order({
+    const totalAmount = cartItems.reduce((acc,curr) => acc + curr.price * curr.quantity ,0) + shipping_fee;
+    // console.log("2",totalAmount,"----")
+
+    let newOrder = await Order.create({
         userId: req.user.id,
         items: orderItems,
         address: formData,
         amount: totalAmount,
-        paymentMode: paymentMode,
+        paymentMode: "razorpay",
         payment: false,
         date: Date.now(),
     });
 
-    await newOrder.save();
+
+    const options = {
+        amount: totalAmount * 100,
+        currency: "INR",
+        receipt: newOrder._id.toString(),
+    }
+
+    const razorOrder = await razorpay.orders.create(options);
+
+    // await razorpayInstance.orders.create(options,(error,order) => {
+    //     if(error) {
+    //         console.log(error);
+    //         return res.json({success: false, message: error})
+    //     }
+    //     res.json({success: true,order})
+    // })
+    return res.json({
+      success: true,
+      orderId: newOrder._id,
+      amount: totalAmount,
+      razorOrder,
+      key: process.env.RAZORPAY_KEY_ID,
+    });
 }
+
+const verifyRazorPay = async (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } =
+    req.body;
+
+  const bodyString = razorpay_order_id + "|" + razorpay_payment_id;
+
+  const expectedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    .update(bodyString)
+    .digest("hex");
+
+  if (expectedSignature !== razorpay_signature) {
+    return res.json({ success: false, error: "Signature verification failed" });
+  }
+
+  // Update order as paid
+  await Order.findByIdAndUpdate(orderId, { payment: true });
+
+  const order = await Order.findById(orderId);
+
+  // Clear cart (your schema uses item: [])
+  await Cart.updateOne(
+    { userId: order.userId },
+    { $set: { item: [] } }
+  );
+
+  return res.json({ success: true });
+};
 
 //All order data for admin panel
 const allOrders = async (req,res) => {
@@ -261,4 +326,4 @@ const updateStatus = async (req,res) => {
     res.json(orderData);
 }
 
-export { placeOrder, placeOrderStripe, placeOrderRazorPay, allOrders, userOrders, updateStatus, verifyStripe }
+export { placeOrder, placeOrderStripe, placeOrderRazorPay, allOrders, userOrders, updateStatus, verifyStripe, verifyRazorPay }
