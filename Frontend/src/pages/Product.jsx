@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { baseurl, ShopContext } from '../context/ShopContext';
 import { assets } from '../assets/frontend_assets/assets';
-import RelatedProduct from '../components/relatedProduct';
+import RelatedProduct from '../components/RelatedProduct.jsx';
 
 const Product = () => {
   let [productData, setProductData] = useState();
