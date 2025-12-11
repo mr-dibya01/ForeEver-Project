@@ -16,7 +16,13 @@ connectDB();
  
 app.use(express.json()); 
 app.use(express.urlencoded({extended: true}));
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://heavenglow-frontend.vercel.app/",   // frontend URL after deploy
+    "http://localhost:5173"
+  ],
+  credentials: true,
+}));
 
 
 app.use('/api/user', userRouter); 
