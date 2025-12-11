@@ -7,7 +7,7 @@ function Footer() {
     <div>
       <div className='flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] my-10 mt-20 gap-14 sm:text-base text-sm text-gray-500'>
         <div>
-          <img src={assets.logo1} alt="" className='w-56 mb-5'/>
+          <img src={assets.logo1} alt="" className='w-48 sm:w-56 mb-5'/>
           <p className='w-full sm:w-[65%] text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus aliquid minus impedit unde. Voluptate minima amet excepturi, ratione est ex consectetur maiores, quaerat, libero voluptates ipsum tenetur quibusdam laboriosam porro?</p>
         </div>
         <div>

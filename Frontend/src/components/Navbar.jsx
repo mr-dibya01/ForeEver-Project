@@ -3,6 +3,7 @@ import { assets } from '../assets/frontend_assets/assets.js'
 import { Link, NavLink } from 'react-router-dom'
 import { IoHomeOutline } from "react-icons/io5";
 import { BsCollection } from "react-icons/bs";
+import { BsBoxSeam } from "react-icons/bs";
 import { LuContact } from "react-icons/lu";
 import { BsInfoSquare } from "react-icons/bs";
 import { ShopContext } from '../context/ShopContext.jsx';
@@ -17,7 +18,7 @@ function Navbar() {
     return (
         <div className='flex justify-between items-center py-4 text-sm'> 
             <Link to='/'>
-                <img src={assets.logo1} alt="" className='w-56 hover:cursor-pointer'/>
+                <img src={assets.logo1} alt="" className='w-48 sm:w-56 hover:cursor-pointer'/>
             </Link>
             <div className='hidden sm:flex gap-6 items-center text-gray-700'>
                 <NavLink to={"/"}  className="flex flex-col items-center gap-1">
@@ -46,7 +47,7 @@ function Navbar() {
                         <div className='group-hover:block dropdown-menu hidden absolute top-8 right-0 rounded'>
                             <div className='flex flex-col gap-2 w-36 px-3 py-3 bg-slate-100 text-gray-500 text-lg'>
                                 <p className='cursor-pointer hover:text-black'>My Profile</p>
-                                <p className='cursor-pointer  hover:text-black'>Account</p>
+                                <p className='cursor-pointer  hover:text-black' onClick={() =>{ navigate('/orders')}}>Orders</p>
                                 <p className='cursor-pointer hover:text-black' onClick={() =>{ setToken(""); navigate('/login')}}>Logout</p>
                             </div>
                         </div>
@@ -67,6 +68,7 @@ function Navbar() {
                     </div>
                     <NavLink className={"flex items-center gap-2 border py-3 pl-8 font-medium hover:bg-gray-200 transition"} onClick={() => setSidebar(false)} to={"/"}><IoHomeOutline  className='size-4 '/>HOME</NavLink>
                     <NavLink className={"flex items-center gap-2 border py-3 pl-8 font-medium hover:bg-gray-200 transition"} onClick={() => setSidebar(false)} to={"/collection"}><BsCollection className='size-4'/>COLLECTIONS</NavLink>
+                    <NavLink className={"flex items-center gap-2 border py-3 pl-8 font-medium hover:bg-gray-200 transition"} onClick={() => setSidebar(false)} to={"/orders"}><BsBoxSeam className='size-4'/>ORDERS</NavLink>
                     <NavLink className={"flex items-center gap-2 border py-3 pl-8 font-medium hover:bg-gray-200 transition"} onClick={() => setSidebar(false)} to={"/about"}><BsInfoSquare className='size-4 text-black'/>ABOUT</NavLink>
                     <NavLink className={"flex items-center gap-2 border py-3 pl-8 font-medium hover:bg-gray-200 transition"} onClick={() => setSidebar(false)} to={"/contact"}><LuContact className='size-4'/>CONTACT</NavLink>
                 </div>
