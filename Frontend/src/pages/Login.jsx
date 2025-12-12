@@ -47,7 +47,7 @@ const Login = () => {
           : ""
         }
         <input type="email" required onChange={(e) => setFormData({...formData,email: e.target.value})} value={formData.email} className='border border-gray-400 w-full  p-2 h-10 mb-4' placeholder='Email'/>
-        <input type="text"  required onChange={(e) => setFormData({...formData,password: e.target.value})} value={formData.password} className='border border-gray-400 w-full  p-2 h-10 mb-2' placeholder='Password'/>
+        <input type="password"  required onChange={(e) => setFormData({...formData,password: e.target.value})} value={formData.password} className='border border-gray-400 w-full  p-2 h-10 mb-2' placeholder='Password'/>
         {
           currentState === 'login'?
             <div className='flex justify-between w-full pb-8'>

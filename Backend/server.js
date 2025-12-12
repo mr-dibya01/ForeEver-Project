@@ -22,6 +22,7 @@ app.use(
       "https://heavenglow-frontend.vercel.app",
       "https://heavenglow-frontend.vercel.app/",
       "http://localhost:5173",
+      "http://localhost:5174"
     ],
     credentials: true,
   })
